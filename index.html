@@ -1,241 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oráculo Mágico</title>
-    <style>
-        /* O CSS (visual) é exatamente o mesmo da versão anterior */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #6e45ff, #3f87a6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-        }
-        #card-pile {
-            background-color: #ffffff;
-            width: 250px;
-            height: 350px;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 5px solid #fff;
-        }
-        #card-pile::before {
-            content: '';
-            position: absolute;
-            width: 230px;
-            height: 330px;
-            background: #eee;
-            border-radius: 15px;
-            transform: translateY(-20px) rotate(-5deg);
-            z-index: -1;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        #card-pile .emoji {
-            font-size: 150px;
-            text-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        #card-pile:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            position: relative;
-            animation: zoomIn 0.3s ease;
-        }
-        @keyframes zoomIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 30px;
-            font-weight: bold;
-            color: #aaa;
-            cursor: pointer;
-        }
-        .close-button:hover {
-            color: #000;
-        }
-        #desafio-cat {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-        #desafio-q {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
-        }
-        #show-answer-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-bottom: 15px;
-        }
-        #desafio-r {
-            display: none;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #007bff;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oráculo Mágico</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body {
+        background: linear-gradient(135deg, #6e45ff, #3f87a6);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        min-height: 100vh; text-align: center; padding: 20px;
+    }
+
+    /* Carta */
+    #card-pile {
+        background-color: #ffffff;
+        width: 250px; height: 350px;
+        border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;
+        /* Inicialmente 'none', será definido como 'flex' após o dado */
+        display: none; 
+        justify-content: center; align-items: center;
+        border: 5px solid #fff;
+    }
+    #card-pile .emoji { font-size: 150px; text-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    #card-pile:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+
+    /* Botões */
+    .btn {
+        margin-top: 20px;
+        background-color: #ffd700;
+        color: #000;
+        font-weight: bold;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.25);
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    .btn:hover { transform: scale(1.05); background-color: #ffcc00; }
+
+    /* Modal */
+    .modal {
+        display: none; position: fixed; z-index: 100; left: 0; top: 0;
+        width: 100%; height: 100%; background-color: rgba(0,0,0,0.6);
+        justify-content: center; align-items: center;
+    }
+    .modal-content {
+        background-color: #fefefe; border-radius: 15px; padding: 30px;
+        width: 90%; max-width: 500px; text-align: center; position: relative;
+        animation: zoomIn 0.3s ease;
+    }
+    @keyframes zoomIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .close-button {
+        position: absolute; top: 10px; right: 20px;
+        font-size: 30px; font-weight: bold; color: #aaa; cursor: pointer;
+    }
+    .close-button:hover { color: #000; }
+
+    /* Desafio */
+    #desafio-cat { font-size: 0.9rem; font-weight: bold; color: #555; margin-bottom: 10px; text-transform: uppercase; }
+    #desafio-q { font-size: 1.5rem; margin-bottom: 25px; line-height: 1.4; }
+    #show-answer-btn, #ok-btn {
+        background-color: #28a745; color: white;
+        padding: 12px 20px; border: none; border-radius: 8px;
+        cursor: pointer; font-size: 1rem; margin: 5px;
+    }
+    #desafio-r { display: none; font-size: 1.3rem; font-weight: bold; color: #007bff; }
+
+    /* Dado */
+    #dice { font-size: 100px; margin: 20px 0; animation: spin 0.2s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* Botões dentro do modal do dado */
+    .dice-buttons { margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+</style>
 </head>
 <body>
+
+    <button id="dice-btn" class="btn">🎲 Rolar Dado</button>
 
     <div id="card-pile" title="Clique para um novo desafio!">
         <span class="emoji">❓</span>
     </div>
 
     <div id="challenge-modal" class="modal">
-	<div class="modal-content">
+        <div class="modal-content">
             <span class="close-button" id="close-btn">&times;</span>
-            
             <h3 id="desafio-cat">Categoria</h3>
             <p id="desafio-q">Clique na carta!</p>
-            
             <button id="show-answer-btn">Ver Resposta</button>
+            <button id="ok-btn" style="display:none;">OK</button>
             <p id="desafio-r">A resposta aparece aqui.</p>
         </div>
     </div>
 
-    <script>
-        // --- ATUALIZAÇÃO IMPORTANTE ---
-        // A lista de 'desafios' foi reescrita para ser 100% texto.
-        
-        const desafios = [
-            // Categoria: Padrões
-            { cat: "PADRÕES", q: "Qual o próximo passo? CIMA, DIREITA, BAIXO, CIMA, __?", r: "DIREITA" },
-            { cat: "PADRÕES", q: "Qual a próxima letra? O, X, X, O, X, X, O, __?", r: "X" },
-            { cat: "PADRÕES", q: "Complete: 5, 10, 15, 20, 25, __?", r: "30" },
-            { cat: "PADRÕES", q: "Complete: A, C, E, G, __?", r: "I (Pula uma letra)" },
-            { cat: "PADRÕES", q: "Complete: 1, 2, 4, 8, __?", r: "16 (O dobro do anterior)" },
-            { cat: "PADRÕES", q: "Complete: O , OO , OOO , __?", r: "OOOO" },
-            { cat: "PADRÕES", q: "Complete: I, H, G, F, __?", r: "E (Ordem alfabética invertida)" },
+    <div id="dice-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="dice-title">🎲 Rolando o Dado...</h2>
+            <div id="dice">⚀</div>
+            <div class="dice-buttons">
+                <button id="ver-carta-btn" class="btn" style="display:none;">🃏 Escolher Carta</button>
+                <button id="rolar-novamente-btn" class="btn" style="display:none;">🎲 Rolar Novamente</button>
+            </div>
+        </div>
+    </div>
 
-            // Categoria: O Intruso (Abstração)
-            { cat: "O INTRUSO", q: "Qual é o diferente? MAÇÃ, BANANA, CENOURA, UVA", r: "CENOURA (Nao é fruta)" },
-            { cat: "O INTRUSO", q: "Qual é o diferente? CARRO, AVIAO, BICICLETA, NAVIO", r: "BICICLETA (Nao tem motor)" },
-            { cat: "O INTRUSO", q: "Qual é o diferente? CASA, PORTA, CHAVE, JANELA", r: "CHAVE (Nao é parte fixa da casa)" },
-            { cat: "O INTRUSO", q: "Qual é o diferente? GATO, CACHORRO, LEAO, PASSARO", r: "PASSARO (Nao é mamífero)" },
-            { cat: "O INTRUSO", q: "Qual é o diferente? 2, 4, 6, 8, 9", r: "9 (É ímpar)" },
-            { cat: "O INTRUSO", q: "Qual é o diferente? QUADRADO, CIRCULO, TRIANGULO, SETA", r: "SETA (Nao é uma forma fechada)" },
-	        { cat: "O INTRUSO", q: "Qual é o diferente? TIGRE, LEÃO, PATO, GALINHA", r: "GALINHA (PALAVRA MAIOR)" },
+<script>
+const desafios = [
+    { cat: "PADRÕES", q: "Qual o próximo passo? CIMA, DIREITA, BAIXO, CIMA, __?", r: "DIREITA" },
+    { cat: "O INTRUSO", q: "Qual é o diferente? MAÇÃ, BANANA, CENOURA, UVA", r: "CENOURA (Não é fruta)" },
+    { cat: "LÓGICA", q: "Se Patinho é Pato, Gatinho é __?", r: "Gato" },
+    { cat: "DECOMPOSIÇÃO", q: "A palavra 'BOLA' tem quantas vogais?", r: "2 vogais!" }
+];
 
-            // Categoria: Lógica e Dedução
-            { cat: "LÓGICA", q: "Se Patinho é Pato, Gatinho é __?", r: "Gato" },
-            { cat: "LÓGICA", q: "Se Gelo é Frio, Fogo é __?", r: "Quente" },
-            { cat: "LÓGICA", q: "Se Ana é mais alta que Beto e Beto é mais alto que Carla. Quem é a mais baixa?", r: "Carla" },
-            { cat: "LÓGICA", q: "Se 'A' é igual a 2, B=3 e C=5, quanto é A+B+C?", r: "10" },
-            { cat: "LÓGICA", q: "SE Todo peixe fosse azul, que cor seria a baleia?", r: "Não sei, baleia não é peixe!" },
-            { cat: "LÓGICA", q: "O irmão da minha mãe tem um filho. O que ele é meu?", r: "Primo" },
-            { cat: "LÓGICA", q: "Se você colocar gelo no sol, o que acontece?", r: "Derrete" },
-	        { cat: "LÓGICA", q: "Se hoje é segunda, que dia é depois de amanhã?", r: "Quarta" },
-            { cat: "LÓGICA", q: "João troca de nome com Pedro a cada segundo. Passaram 3 segundos e Maria chamou Pedro. Quem veio?", r: "João" },
+const card = document.getElementById("card-pile");
+const diceBtn = document.getElementById("dice-btn");
+const diceModal = document.getElementById("dice-modal");
+const dice = document.getElementById("dice");
+const diceTitle = document.getElementById("dice-title");
+const verCartaBtn = document.getElementById("ver-carta-btn");
+const rolarNovamenteBtn = document.getElementById("rolar-novamente-btn");
 
+const modal = document.getElementById("challenge-modal");
+const closeBtn = document.getElementById("close-btn");
+const catEl = document.getElementById("desafio-cat");
+const qEl = document.getElementById("desafio-q");
+const rEl = document.getElementById("desafio-r");
+const showAnswerBtn = document.getElementById("show-answer-btn");
+const okBtn = document.getElementById("ok-btn");
 
-            // Categoria: Decomposição e Visão
-            { cat: "VISÃO ESPACIAL", q: "Desenhe um quadrado. Corte ele ao meio na vertical e na horizontal. Quantos quadrados existem no total?", r: "5 (Os 4 pequenos e 1 grande)" },
-            { cat: "DECOMPOSIÇÃO", q: "A palavra 'BOLA' tem quantas vogais?", r: "2 vogais!" },
-            { cat: "DECOMPOSIÇÃO", q: "Quantas letras 'A' existem na palavra 'LARANJA'?", r: "3" },
-            { cat: "VISÃO ESPACIAL", q: "Se você dobrar uma folha de papel ao meio e cortar metade de um coração, o que aparece quando abrir?", r: "Um coração inteiro!" },
+function rolarDado() {
+    diceModal.style.display = 'flex';
+    card.style.display = 'none'; 
+    diceBtn.style.display = 'none';
+    verCartaBtn.style.display = 'none';
+    rolarNovamenteBtn.style.display = 'none';
+    dice.style.animation = 'spin 0.2s linear infinite';
+    diceTitle.textContent = "🎲 Rolando o Dado...";
 
+    let count = 0;
+    const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+    let intervalo = setInterval(() => {
+        dice.textContent = faces[Math.floor(Math.random() * 6)];
+        count++;
+        if (count > 15) {
+            clearInterval(intervalo);
+            dice.style.animation = 'none';
+            const final = Math.floor(Math.random() * 6) + 1;
+            dice.textContent = faces[final - 1];
+            diceTitle.textContent = `Saiu: ${final}!`; 
             
-            // Categoria: Algoritmos e Depuração
-            { cat: "ALGORITMO", q: "Qual o 2º passo para achar página de um livro fechado?", r: "folhear o livro" },
-            { cat: "ALGORITMO", q: "O que vem ANTES de amarrar o cadarço do tênis?", r: "Calçar o tênis" },
-            { cat: "DEBURAÇÃO", q: "Ache o erro: Para beber água: 1. Pegue o copo. 2. Abra o bebedor. 3.Beba a água", r: "Faltou colocar água no copo" },
-            { cat: "ALGORITMO", q: "Quais são 3 passos para abrir uma porta com chave?", r: "1. Inserir a chave na fechadura; 2. Girar a chave; 3. Puxar ou empurrar a porta para abrir" },
-            { cat: "DEBURAÇÃO", q: "Ache o erro na ordem para desenhar um quadrado: SOBE, VIRA DIREITA, DESCE, VIRA DIREITA", r: "O último 'VIRA DIREITA' (deveria ser VIRA ESQUERDA)" }
-        ];
-
-        // O resto do JavaScript é o mesmo de antes
-        const modal = document.getElementById("challenge-modal");
-        const cardButton = document.getElementById("card-pile");
-        const closeButton = document.getElementById("close-btn");
-        const showAnswerButton = document.getElementById("show-answer-btn");
-        
-        const catEl = document.getElementById("desafio-cat");
-        const qEl = document.getElementById("desafio-q");
-        const rEl = document.getElementById("desafio-r");
-
-        function gerarDesafio() {
-            const index = Math.floor(Math.random() * desafios.length);
-            const desafio = desafios[index];
-            
-            catEl.textContent = "Categoria: " + desafio.cat;
-            qEl.textContent = desafio.q;
-            rEl.textContent = "Resposta: " + desafio.r;
-            
-            rEl.style.display = 'none';
-            modal.style.display = 'flex';
+            verCartaBtn.style.display = 'inline-block'; 
+            rolarNovamenteBtn.style.display = 'inline-block';
         }
+    }, 100);
+}
 
-        function fecharModal() {
-            modal.style.display = 'none';
-        }
+// *** ALTERAÇÃO AQUI: Esta função agora só exibe a carta. ***
+function mostrarCartaParaClique() {
+    diceModal.style.display = 'none'; // Fecha o modal do dado
+    diceBtn.style.display = 'none'; // Esconde o botão Rolar Dado
+    card.style.display = 'flex'; // Exibe a carta para ser clicada
+}
 
-        function toggleResposta() {
-            if (rEl.style.display === 'none') {
-                rEl.style.display = 'block';
-            } else {
-                rEl.style.display = 'none';
-            }
-        }
+// *** NOVA FUNÇÃO: Abre o modal do desafio após o clique na carta. ***
+function abrirModalDesafio() {
+    card.style.display = 'none'; // Esconde a carta ao abrir o modal
+    
+    // Configura o desafio (mesma lógica de antes)
+    const desafio = desafios[Math.floor(Math.random() * desafios.length)];
+    catEl.textContent = "Categoria: " + desafio.cat;
+    qEl.textContent = desafio.q;
+    rEl.textContent = "Resposta: " + desafio.r;
+    
+    rEl.style.display = 'none';
+    okBtn.style.display = 'none';
+    showAnswerBtn.style.display = 'inline-block';
+    modal.style.display = 'flex'; // Exibe o modal
+}
 
-        cardButton.addEventListener('click', gerarDesafio);
-        closeButton.addEventListener('click', fecharModal);
-        showAnswerButton.addEventListener('click', toggleResposta);
-        
-        window.addEventListener('click', function(event) {
-            if (event.target == modal) {
-                fecharModal();
-            }
-        });
+function toggleResposta() {
+    rEl.style.display = (rEl.style.display === 'none') ? 'block' : 'none';
+    showAnswerBtn.style.display = 'none';
+    okBtn.style.display = 'inline-block';
+}
 
-    </script>
+function fecharModal() {
+    modal.style.display = 'none'; 
+    card.style.display = 'none'; 
+    diceBtn.style.display = 'inline-block'; // Volta ao botão inicial de Rolar Dado
+}
+
+// --- LISTENERS ATUALIZADOS ---
+
+diceBtn.addEventListener("click", rolarDado);
+
+// O botão dentro do modal do dado agora chama 'mostrarCartaParaClique'
+verCartaBtn.addEventListener("click", mostrarCartaParaClique); 
+
+// *** NOVO LISTENER: A carta agora abre o modal do desafio ***
+card.addEventListener("click", abrirModalDesafio);
+
+rolarNovamenteBtn.addEventListener("click", rolarDado);
+showAnswerBtn.addEventListener("click", toggleResposta);
+okBtn.addEventListener("click", fecharModal);
+closeBtn.addEventListener("click", fecharModal);
+
+window.addEventListener("click", e => {
+    if (e.target === diceModal) diceModal.style.display = 'none';
+    if (e.target === modal) fecharModal();
+});
+</script>
 </body>
-
 </html>
-
