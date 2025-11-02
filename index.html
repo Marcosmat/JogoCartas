@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oráculo Mágico</title>
+<title>Cartas da Inteligência</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body {
@@ -114,11 +114,69 @@
 
 <script>
 const desafios = [
-    { cat: "PADRÕES", q: "Qual o próximo passo? CIMA, DIREITA, BAIXO, CIMA, __?", r: "DIREITA" },
-    { cat: "O INTRUSO", q: "Qual é o diferente? MAÇÃ, BANANA, CENOURA, UVA", r: "CENOURA (Não é fruta)" },
-    { cat: "LÓGICA", q: "Se Patinho é Pato, Gatinho é __?", r: "Gato" },
-    { cat: "DECOMPOSIÇÃO", q: "A palavra 'BOLA' tem quantas vogais?", r: "2 vogais!" }
+  // Categoria: Padrões
+  { cat: "PADRÕES", q: "Qual o próximo passo? CIMA, DIREITA, BAIXO, CIMA, __?", r: "DIREITA" },
+  { cat: "PADRÕES", q: "Qual a próxima letra? O, X, X, O, X, X, O, __?", r: "X" },
+  { cat: "PADRÕES", q: "Complete: 5, 10, 15, 20, 25, __?", r: "30" },
+  { cat: "PADRÕES", q: "Complete: A, C, E, G, __?", r: "I (Pula uma letra)" },
+  { cat: "PADRÕES", q: "Complete: 1, 2, 4, 8, __?", r: "16 (O dobro do anterior)" },
+  { cat: "PADRÕES", q: "Complete: O , OO , OOO , __?", r: "OOOO" },
+  { cat: "PADRÕES", q: "Complete: E, D, C, B, __?", r: "A (Ordem alfabética invertida)" },
+  { cat: "PADRÕES", q: "Complete: 2, 4, 6, 8, __?", r: "10" },
+  { cat: "PADRÕES", q: "Complete: B, D, F, H, __?", r: "J (Pula uma letra)" },
+  { cat: "PADRÕES", q: "Complete: 10, 20, 30, __?", r: "40" },
+  { cat: "PADRÕES", q: "Complete: SOL, LUA, ESTRELA, SOL, __?", r: "LUA" },
+  { cat: "PADRÕES", q: "Complete: 100, 90, 80, __?", r: "70" },
+
+  // Categoria: O Intruso
+  { cat: "O INTRUSO", q: "Qual é o diferente? MAÇÃ, BANANA, CENOURA, UVA", r: "CENOURA (Não é fruta)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? CARRO, AVIÃO, BICICLETA, NAVIO", r: "BICICLETA (Não tem motor)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? TANQUE, GARFO, GARRAFA, COPO", r: "GARFO (Não pode guardar água!)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? GATO, TUBARÃO, TIGRE, CABRITO", r: "CABRITO (Não come carne!)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? 2, 4, 6, 8, 9", r: "9 (É ímpar)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? RETA, QUADRADO, CÍRCULO, TRIÂNGULO", r: "RETA (Não é uma forma fechada)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? TIGRE, LEÃO, PATO, GALINHA", r: "GALINHA (Palavra maior)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? LEITE, PÃO, SUCO, ÁGUA", r: "PÃO (Não é líquido)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? VERMELHO, AZUL, VERDE, MARGARIDA", r: "MARGARIDA (Não é cor!)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? MONTANHA, POSTE, RELÓGIO, RIO", r: "RELÓGIO (É o menor)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? OCEANO, SOL, ESTRELA, MARTE", r: "OCEANO (Fica fora da Terra!)" },
+  { cat: "O INTRUSO", q: "Qual é o diferente? BRINCO, BATOM, SOBRANCELHA, PULSEIRA", r: "PULSEIRA (Não fica no rosto!)" },
+
+  // Categoria: Lógica e Dedução
+  { cat: "LÓGICA", q: "Se Patinho é Pato, Gatinho é __?", r: "Gato" },
+  { cat: "LÓGICA", q: "Se Gelo é Frio, Fogo é __?", r: "Quente" },
+  { cat: "LÓGICA", q: "Se Ana é mais alta que Beto e Beto é mais alto que Carla. Quem é a mais baixa?", r: "Carla" },
+  { cat: "LÓGICA", q: "Se 'A' é igual a 2, B=3 e C=5, quanto é A+B+C?", r: "10" },
+  { cat: "LÓGICA", q: "Se todo peixe fosse azul, que cor seria a baleia?", r: "Não sei, baleia não é peixe!" },
+  { cat: "LÓGICA", q: "O irmão da minha mãe tem um filho. O que ele é meu?", r: "Primo" },
+  { cat: "LÓGICA", q: "Se você colocar gelo no sol, o que acontece?", r: "Derrete" },
+  { cat: "LÓGICA", q: "Se hoje é segunda, que dia é depois de amanhã?", r: "Quarta" },
+  { cat: "LÓGICA", q: "João troca de nome com Pedro a cada segundo. Passaram 3 segundos e Maria chamou Pedro. Quem veio?", r: "João" },
+  { cat: "LÓGICA", q: "O pai de João tem 3 filhos, Igor, José e?", r: "João" },
+  { cat: "LÓGICA", q: "Felipe está à esquerda de Pedro, e Pedro está à esquerda de Juca. Quem está no meio?", r: "Pedro" },
+  { cat: "LÓGICA", q: "Se um gato tem 4 patas, quantas patas têm 2 gatos?", r: "8" },
+  { cat: "LÓGICA", q: "O pai do meu pai tem dois filhos, João e Joana. Como se chama meu pai?", r: "João" },
+
+  // Categoria: Decomposição e Visão Espacial
+  { cat: "VISÃO ESPACIAL", q: "Desenhe um quadrado. Risque ele ao meio na vertical e na horizontal. Quantos quadrados existem no total?", r: "5 (Os 4 pequenos e 1 grande)" },
+  { cat: "DECOMPOSIÇÃO", q: "A palavra 'BOLA' tem quantas vogais?", r: "2 vogais!" },
+  { cat: "DECOMPOSIÇÃO", q: "Quantas letras 'A' existem na palavra 'LARANJA'?", r: "3" },
+  { cat: "VISÃO ESPACIAL", q: "Se você dobrar uma folha de papel ao meio e cortar metade de um coração, o que aparece quando abrir?", r: "Um coração inteiro!" },
+  { cat: "DECOMPOSIÇÃO", q: "Quantas letras tem a palavra 'ESCOLA'?", r: "6" },
+  { cat: "DECOMPOSIÇÃO", q: "Quantas sílabas tem a palavra 'MACACO'?", r: "3" },
+  { cat: "VISÃO ESPACIAL", q: "Um robô anda 1 passos para frente, vira à direita, anda 1 passo, vira à direita, anda 1 passo. Onde está agora?", r: "No mesmo lugar de onde saiu!" },
+  { cat: "DECOMPOSIÇÃO", q: "Quantas consoantes tem a palavra 'FELIZ'?", r: "3" },
+  { cat: "VISÃO ESPACIAL", q: "Se você juntar dois círculos, um em cima do outro, o que parece?", r: "Um número 8" },
+
+  // Categoria: Algoritmos e Depuração
+  { cat: "ALGORITMO", q: "Qual o 2º passo para achar a página de um livro fechado?", r: "Folhear o livro" },
+  { cat: "ALGORITMO", q: "O que vem ANTES de amarrar o cadarço do tênis?", r: "Calçar o tênis" },
+  { cat: "DEBURAÇÃO", q: "Ache o erro: Para beber água: 1. Pegue o copo. 2. Abra o bebedor. 3. Beba a água", r: "Faltou colocar água no copo" },
+  { cat: "ALGORITMO", q: "Quais são 3 passos para abrir normalmente uma porta trancada com chave?", r: "1. Inserir a chave; 2. Girar; 3. Abrir a porta" },
+  { cat: "DEBURAÇÃO", q: "Ache o erro na ordem para desenhar um quadrado: SOBE, VIRA DIREITA, DESCE, VIRA DIREITA", r: "Final devia ser VIRA ESQUERDA"}
 ];
+
+
 
 const card = document.getElementById("card-pile");
 const diceBtn = document.getElementById("dice-btn");
@@ -220,3 +278,4 @@ window.addEventListener("click", e => {
 </script>
 </body>
 </html>
+
